@@ -7,9 +7,9 @@ public class VanController : MonoBehaviour
 {
     public bool gameStarted = false;
     private float steerDirection, steerAngle, currentSteerAngle, currentSpeed, currentBreakForce;
-    private bool isBreaking;
+    private bool isBreaking, isReversing, isReadyToReverse;
 
-    [SerializeField] private float motorForce, minSpeed, breakForce, maxSteerAngle;
+    [SerializeField] private float motorForce, reverseForce, breakForce, maxSteerAngle;
 
     [SerializeField] private WheelCollider frontLeftWheelCollider;
     [SerializeField] private WheelCollider frontRightWheelCollider;
@@ -21,9 +21,12 @@ public class VanController : MonoBehaviour
     [SerializeField] private Transform backLeftWheelTransform;
     [SerializeField] private Transform backRightWheelTransform;
 
+    [SerializeField] private Rigidbody rb;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        isReversing = false;
     }
     private void Update()
     {
@@ -32,10 +35,12 @@ public class VanController : MonoBehaviour
         //    Cursor.lockState = CursorLockMode.Locked;
         //}
         //may change out for check velocity function. If falls below set speed player loses
-        if(currentSpeed < minSpeed && gameStarted)
-        {
-            currentSpeed = minSpeed;
-        }
+        //if(currentSpeed < minSpeed && gameStarted)
+        //{
+        //    currentSpeed = minSpeed;
+        //}
+
+        //Debug.Log("motor Torque: " + frontLeftWheelCollider.motorTorque);
     }
     private void FixedUpdate()
     {
@@ -46,11 +51,28 @@ public class VanController : MonoBehaviour
 
     private void handleMotor()
     {
-        frontLeftWheelCollider.motorTorque = currentSpeed * motorForce;
-        frontRightWheelCollider.motorTorque = currentSpeed * motorForce;
-
-        if (isBreaking)
+        if (!isReversing)
         {
+            frontLeftWheelCollider.motorTorque = currentSpeed * motorForce;
+            frontRightWheelCollider.motorTorque = currentSpeed * motorForce;
+            backLeftWheelCollider.motorTorque = currentSpeed * motorForce;
+            backRightWheelCollider.motorTorque = currentSpeed * motorForce;
+        }
+        else if (isReversing)
+        {
+            frontLeftWheelCollider.motorTorque = currentSpeed * reverseForce;
+            frontRightWheelCollider.motorTorque = currentSpeed * reverseForce;
+            backLeftWheelCollider.motorTorque = currentSpeed * reverseForce;
+            backRightWheelCollider.motorTorque = currentSpeed * reverseForce;
+        }
+        
+
+        if (isBreaking && !isReversing)
+        {
+            if(rb.velocity.magnitude < 2f)
+            {
+                isReadyToReverse = true;
+            }
             currentBreakForce = breakForce;
             applyBreaking();
         }
@@ -99,18 +121,37 @@ public class VanController : MonoBehaviour
 
     public void Accelerate(InputAction.CallbackContext context)
     {
+        isReversing = false;
+        isReadyToReverse = false;
         currentSpeed = context.ReadValue<float>();
+        //if(context.started || context.performed)
+        //{
+
+        //    isAccelerating = true;
+        //}
+        //else
+        //{
+        //    isAccelerating = false;
+        //}
+
     }
     public void Decelerate(InputAction.CallbackContext context)
     {
         var decelerateFloat = context.ReadValue<float>();
-        if(decelerateFloat != 0)
+        if(decelerateFloat != 0 && !isReadyToReverse)
         {
             isBreaking = true;
+        }
+        else if(decelerateFloat != 0 && isReadyToReverse)
+        {
+            isReversing = true;
+            isBreaking = false;
+            currentSpeed = decelerateFloat;
         }
         else
         {
             isBreaking = false;
+            //isReversing = false;
         }
     }
 }

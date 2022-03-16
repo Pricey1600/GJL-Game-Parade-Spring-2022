@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6323542129388774978}
   - component: {fileID: 1283537570928185755}
   - component: {fileID: 1257020889375960268}
+  - component: {fileID: 7601375279480554500}
   - component: {fileID: 6010769380884942616}
   - component: {fileID: 5886675741710820115}
   m_Layer: 6
@@ -84,6 +85,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7601375279480554500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719525288429480422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11103d33ac84b2347a9ea82c3dd3e9ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerLength: 3
+  timer: 0
+  parentSpawner: {fileID: 0}
 --- !u!136 &6010769380884942616
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -91,7 +107,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4719525288429480422}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 60e1ec911de935141ad33eec7437c4fc, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -108,7 +124,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
