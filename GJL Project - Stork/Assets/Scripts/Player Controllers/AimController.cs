@@ -12,7 +12,7 @@ public class AimController : MonoBehaviour
     [SerializeField] private CinemachineFreeLook followVC;
     private CinemachinePOV aimPOV;
     [SerializeField] private Transform aimLocator, van, launcher, aimLocatorSprite;
-    [SerializeField] private GameObject babyPrefab;
+    [SerializeField] private List<GameObject> babyPrefabs;
     [SerializeField] private LayerMask aimColliderMask;
 
     private Quaternion camAnglesQ;
@@ -56,7 +56,8 @@ public class AimController : MonoBehaviour
     {
         if (context.started && isAiming)
         {
-            var babyToLaunch = Instantiate(babyPrefab, launcher.position, launcher.rotation);
+            int babyInt = Random.Range(0, babyPrefabs.Count);
+            var babyToLaunch = Instantiate(babyPrefabs[babyInt], launcher.position, launcher.rotation);
             babyToLaunch.GetComponent<Rigidbody>().velocity = launcher.forward * (aiming_V0 + 0.5f);
         }
         
