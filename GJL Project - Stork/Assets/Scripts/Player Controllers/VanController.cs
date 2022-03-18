@@ -23,30 +23,68 @@ public class VanController : MonoBehaviour
 
     [SerializeField] private Rigidbody rb;
 
-    private void Start()
+    private float resetCooldownTimer, completeResetTimer;
+    [SerializeField] private float resetCooldownDuration, completeResetHoldDuration;
+    private bool completelyResetting;
+
+    //[SerializeField] private AudioClip ;
+    [SerializeField] private AudioSource vanAudioSource, vanHornAS;
+
+    private void OnEnable()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        GameManager.OnStarted += GameStart;
+        GameManager.OnComplete += GameEnd;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnStarted -= GameStart;
+        GameManager.OnComplete -= GameEnd;
+    }
+    private void GameStart()
+    {
+        gameStarted = true;
         isReversing = false;
+        completeResetTimer = completeResetHoldDuration;
+        //enable camera movement
+    }
+    private void GameEnd()
+    {
+        gameStarted = false;
+        //disable camera movement
     }
     private void Update()
     {
-        //if (gameStarted)
-        //{
-        //    Cursor.lockState = CursorLockMode.Locked;
-        //}
-        //may change out for check velocity function. If falls below set speed player loses
-        //if(currentSpeed < minSpeed && gameStarted)
-        //{
-        //    currentSpeed = minSpeed;
-        //}
-
-        //Debug.Log("motor Torque: " + frontLeftWheelCollider.motorTorque);
+        if(resetCooldownTimer > 0)
+        {
+            resetCooldownTimer -= Time.deltaTime;
+        }
+        if(completeResetTimer > 0 && completelyResetting)
+        {
+            completeResetTimer -= Time.deltaTime;
+            if(completeResetTimer <= 0)
+            {
+                //reset van fully
+                transform.rotation = new Quaternion(0, 0, 0, 0);
+                transform.position = new Vector3(0, 1.5f, 0);
+            }
+            
+        }
     }
     private void FixedUpdate()
     {
-        handleMotor();
-        handleSteering();
-        updateWheels();
+        if (gameStarted)
+        {
+            handleMotor();
+            handleSteering();
+            updateWheels();
+        }
+        else
+        {
+            currentBreakForce = breakForce;
+            applyBreaking();
+        }
+        
     }
 
     private void handleMotor()
@@ -142,7 +180,7 @@ public class VanController : MonoBehaviour
         {
             isBreaking = true;
         }
-        else if(decelerateFloat != 0 && isReadyToReverse)
+        else if(context.performed && isReadyToReverse)
         {
             isReversing = true;
             isBreaking = false;
@@ -154,4 +192,41 @@ public class VanController : MonoBehaviour
             //isReversing = false;
         }
     }
+
+    public void ResetVan(InputAction.CallbackContext context)
+    {
+        if(resetCooldownTimer <= 0 && completeResetTimer == completeResetHoldDuration)
+        {
+            transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+            transform.position = new Vector3(transform.position.x, transform.position.y + 1.5f, transform.position.z);
+            resetCooldownTimer = resetCooldownDuration;
+        }
+        if (context.performed && completeResetTimer > 0)
+        {
+            
+            completelyResetting = true;
+        }
+        else
+        {
+            completelyResetting = false;
+            completeResetTimer = completeResetHoldDuration;
+        }
+        
+    }
+
+    public void SoundHorn(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            vanHornAS.Play();
+        }
+        else
+        {
+            vanHornAS.Stop();
+        }
+        
+    }
+
+
+
 }

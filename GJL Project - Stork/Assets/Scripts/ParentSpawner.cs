@@ -12,6 +12,7 @@ public class ParentSpawner : MonoBehaviour
     private int currentArea;
 
     private Transform spawnArea;
+    private Vector3 spawnPos;
 
     private GameObject newParent, newBystander;
     private string newType;
@@ -19,6 +20,9 @@ public class ParentSpawner : MonoBehaviour
     private GameObject oldParent;
 
     [SerializeField] private int bystandersToSpawn;
+
+    [SerializeField] private Transform objMarker;
+    [SerializeField] private float objMarkerOffsetY;
 
     private void Start()
     {
@@ -32,7 +36,8 @@ public class ParentSpawner : MonoBehaviour
     public void SpawnBystander()
     {
         Assign(false);
-        newBystander = Instantiate(parentPrefab, Place().position, Quaternion.identity);
+        newBystander = Instantiate(parentPrefab, Place(), Quaternion.identity);
+        Debug.Log("Bystander Spawned");
         bystanders.Add(newBystander);
         GiveRole(false);
     }
@@ -43,8 +48,9 @@ public class ParentSpawner : MonoBehaviour
             oldParent = newParent;
         }
         Assign(true);
-        newParent = Instantiate(parentPrefab, Place().position, Quaternion.identity);
+        newParent = Instantiate(parentPrefab, Place(), Quaternion.identity);
         GiveRole(true);
+        AssignObjective(newParent);
         DeleteOldParent();
     }
 
@@ -83,7 +89,7 @@ public class ParentSpawner : MonoBehaviour
 
     }
 
-    private Transform Place()
+    private Vector3 Place()
     {
         if(newType == "standing" || newType == "walking")
         {
@@ -94,14 +100,16 @@ public class ParentSpawner : MonoBehaviour
                 currentArea = 0;
             }
             spawnArea = spawnAreas[currentArea];
+            Debug.Log(spawnArea);
+            spawnPos = spawnArea.GetComponent<SpawnArea>().GetSpawnPos();
         }
         else if(newType == "sitting")
         {
             //find sitting area from list
             int sitSpotInt = Random.Range(0, sittingLocations.Count-1);
-            spawnArea = sittingLocations[sitSpotInt];
+            spawnPos = sittingLocations[sitSpotInt].position;
         }
-        return spawnArea;
+        return spawnPos;
     }
 
     private void GiveRole(bool expecting)
@@ -112,18 +120,30 @@ public class ParentSpawner : MonoBehaviour
             newParent.GetComponent<ParentScript>().type = newType;
             newParent.GetComponent<ParentScript>().isExpecting = expecting;
             newParent.gameObject.tag = "Parent";
+            newParent.GetComponent<ParentScript>().SetUp();
         }
         else
         {
             newBystander.GetComponent<ParentScript>().type = newType;
             newBystander.GetComponent<ParentScript>().isExpecting = expecting;
             newBystander.gameObject.tag = "Bystander";
+            newBystander.GetComponent<ParentScript>().SetUp();
         }
         
     }
 
+    private void AssignObjective(GameObject target)
+    {
+        objMarker.transform.parent = target.transform;
+        objMarker.localPosition = new Vector3(0, objMarkerOffsetY, 0);
+    }
+
     private void DeleteOldParent()
     {
-        Destroy(oldParent);
+        if(oldParent != null)
+        {
+            oldParent.gameObject.GetComponent<ParentScript>().DestroyCountdown();
+        }
+        
     }
 }

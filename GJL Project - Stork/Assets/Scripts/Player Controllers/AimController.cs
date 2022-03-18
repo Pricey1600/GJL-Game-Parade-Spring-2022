@@ -6,7 +6,7 @@ using Cinemachine;
 
 public class AimController : MonoBehaviour
 {
-    public bool isAiming;
+    public bool isAiming, hasBaby;
     [SerializeField] private float aiming_V0, aiming_a, aiming_g, aiming_h, aiming_Vx, aiming_Vy, aiming_R;
     [SerializeField] private CinemachineVirtualCamera aimVC;
     [SerializeField] private CinemachineFreeLook followVC;
@@ -17,9 +17,21 @@ public class AimController : MonoBehaviour
 
     private Quaternion camAnglesQ;
 
+    private void OnEnable()
+    {
+        BabyScript.OnSuccess += ReloadBaby;
+        BabyScript.OnFailure += ReloadBaby;
+    }
+
+    private void OnDisable()
+    {
+        BabyScript.OnSuccess -= ReloadBaby;
+        BabyScript.OnFailure -= ReloadBaby;
+    }
     private void Start()
     {
         aimPOV = aimVC.GetCinemachineComponent<CinemachinePOV>();
+        ReloadBaby();
     }
 
     private void FixedUpdate()
@@ -54,11 +66,12 @@ public class AimController : MonoBehaviour
 
     public void Launch(InputAction.CallbackContext context)
     {
-        if (context.started && isAiming)
+        if (context.started && isAiming && hasBaby)
         {
             int babyInt = Random.Range(0, babyPrefabs.Count);
             var babyToLaunch = Instantiate(babyPrefabs[babyInt], launcher.position, launcher.rotation);
             babyToLaunch.GetComponent<Rigidbody>().velocity = launcher.forward * (aiming_V0 + 0.5f);
+            hasBaby = false;
         }
         
     }
@@ -114,5 +127,10 @@ public class AimController : MonoBehaviour
             isAiming = false;
             aimVC.gameObject.SetActive(false);
         }
+    }
+
+    private void ReloadBaby()
+    {
+        hasBaby = true;
     }
 }

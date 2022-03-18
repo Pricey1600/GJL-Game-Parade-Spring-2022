@@ -8,6 +8,10 @@ public class RandomWalking : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private float walkRadius = 1f;
 
+    private void Start()
+    {
+        transform.position = RandomNavmeshLocation();
+    }
     public Vector3 RandomNavmeshLocation()
     {
         Vector3 randomDirection = Random.insideUnitSphere * walkRadius;
@@ -23,7 +27,7 @@ public class RandomWalking : MonoBehaviour
 
     private void Update()
     {
-        if (!agent.hasPath)
+        if (!agent.hasPath && agent.isActiveAndEnabled)
         {
             agent.SetDestination(RandomNavmeshLocation());
         }

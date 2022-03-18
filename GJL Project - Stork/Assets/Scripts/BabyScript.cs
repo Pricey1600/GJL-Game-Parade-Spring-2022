@@ -9,6 +9,10 @@ public class BabyScript : MonoBehaviour
     [SerializeField] private float timerLength, timer;
     [SerializeField] private ParentSpawner parentSpawner;
 
+    public delegate void ScoreAction();
+    public static event ScoreAction OnSuccess;
+    public static event ScoreAction OnFailure;
+
     private void Start()
     {
         parentSpawner = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ParentSpawner>();
@@ -18,7 +22,9 @@ public class BabyScript : MonoBehaviour
         if(collision.gameObject.tag == "Parent")
         {
             //successful hit
-            Debug.Log("Successful Devilvery");
+            OnSuccess?.Invoke();
+            //Debug.Log("Successful Devilvery");
+            gameObject.GetComponent<Collider>().enabled = false;
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             gameObject.transform.parent = collision.gameObject.transform;
@@ -49,8 +55,9 @@ public class BabyScript : MonoBehaviour
             {
                 //not successful
                 //explode baby.
-                Debug.Log("Failed Delivery");
+                //Debug.Log("Failed Delivery");
                 parentSpawner.SpawnParent();
+                OnFailure?.Invoke();
                 Destroy(gameObject);
             }
         }

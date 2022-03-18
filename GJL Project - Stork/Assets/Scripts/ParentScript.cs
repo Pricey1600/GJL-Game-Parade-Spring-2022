@@ -8,7 +8,10 @@ public class ParentScript : MonoBehaviour
     public string type;
     public bool isExpecting;
 
-    private void Start()
+    private float timer;
+    [SerializeField] private float timerLength;
+
+    public void SetUp()
     {
         if (type == "standing")
         {
@@ -24,6 +27,26 @@ public class ParentScript : MonoBehaviour
         {
             gameObject.GetComponent<NavMeshAgent>().enabled = false;
             gameObject.GetComponent<RandomWalking>().enabled = false;
+
+            //set sitting animations here
+        }
+    }
+
+    public void DestroyCountdown()
+    {
+        timer = timerLength;
+        //play success animation here
+    }
+
+    private void Update()
+    {
+        if(timer > 0)
+        {
+            timer -= Time.deltaTime;
+            if(timer <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
