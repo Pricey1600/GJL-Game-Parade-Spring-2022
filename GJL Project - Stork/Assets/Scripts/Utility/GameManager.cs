@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
     private bool gameRuning, isPaused;
+    [SerializeField] private bool mainMenu;
 
     private float timer;
     [SerializeField] private float gameDuration;
@@ -15,10 +18,19 @@ public class GameManager : MonoBehaviour
     public static event GameEvent OnPause;
     public static event GameEvent OnUnpause;
 
-    //private void Start()
-    //{
-    //    StartGame();
-    //}
+    [SerializeField] private TMP_Text timerText;
+    private string minutes, seconds;
+
+    [SerializeField] private GameObject DesktopControls, ControllerControls;
+
+    private void Start()
+    {
+        if (!mainMenu)
+        {
+            StartGame();
+        }
+        
+    }
     public void StartGame()
     {
         gameRuning = true;
@@ -32,7 +44,11 @@ public class GameManager : MonoBehaviour
         if(timer > 0)
         {
             timer -= Time.deltaTime;
-            if(timer <= 0)
+            //update UI
+            minutes = Mathf.Floor(timer / 60).ToString("0");
+            seconds = Mathf.Floor(timer % 60).ToString("00");
+            timerText.text = minutes + ":" + seconds;
+            if (timer <= 0)
             {
                 //game over. Trigger event
                 gameRuning = false;
@@ -57,6 +73,24 @@ public class GameManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Time.timeScale = 1f;
             OnUnpause?.Invoke();
+        }
+        
+    }
+
+    public void UpdateControls(PlayerInput pi)
+    {
+        if(DesktopControls != null && ControllerControls != null)
+        {
+            if (pi.currentControlScheme.Equals("Controller") == true)
+            {
+                DesktopControls.SetActive(false);
+                ControllerControls.SetActive(true);
+            }
+            else
+            {
+                DesktopControls.SetActive(true);
+                ControllerControls.SetActive(false);
+            }
         }
         
     }
