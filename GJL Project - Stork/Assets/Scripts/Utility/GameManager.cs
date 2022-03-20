@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,13 +23,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text timerText;
     private string minutes, seconds;
 
-    [SerializeField] private GameObject DesktopControls, ControllerControls;
+    [SerializeField] private GameObject DesktopControls, ControllerControls, pauseScreen;
+
+    [SerializeField] private GameObject pauseFirstButton, EndScreenFirstButton, fullscreenToggle;
+
+    private AudioSource mainAS;
 
     private void Start()
     {
+        mainAS = gameObject.GetComponent<AudioSource>();
         if (!mainMenu)
         {
             StartGame();
+        }
+        else
+        {
+            fullscreenToggle.GetComponent<Toggle>().isOn = Screen.fullScreen;
         }
         
     }
@@ -54,6 +65,8 @@ public class GameManager : MonoBehaviour
                 gameRuning = false;
                 Cursor.lockState = CursorLockMode.Confined;
                 OnComplete?.Invoke();
+                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(EndScreenFirstButton);
             }
         }
     }
@@ -65,6 +78,10 @@ public class GameManager : MonoBehaviour
             isPaused = true;
             Cursor.lockState = CursorLockMode.Confined;
             Time.timeScale = 0f;
+            mainAS.volume = mainAS.volume / 3;
+            pauseScreen.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(pauseFirstButton);
             OnPause?.Invoke();
         }
         else
@@ -72,6 +89,8 @@ public class GameManager : MonoBehaviour
             isPaused = false;
             Cursor.lockState = CursorLockMode.Locked;
             Time.timeScale = 1f;
+            mainAS.volume = mainAS.volume * 3;
+            pauseScreen.SetActive(false);
             OnUnpause?.Invoke();
         }
         

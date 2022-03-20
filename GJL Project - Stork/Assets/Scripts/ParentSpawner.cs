@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class ParentSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject parentPrefab;
+    [SerializeField] private List<GameObject> parentPrefabs;
+    [SerializeField] private List<Material> humanMaterials;
     [SerializeField] private List<Transform> sittingLocations;
     [SerializeField] private List<Transform> spawnAreas;
     [SerializeField] private List<GameObject> bystanders;
@@ -16,6 +17,7 @@ public class ParentSpawner : MonoBehaviour
 
     private GameObject newParent, newBystander;
     private string newType;
+    private Quaternion newRotation;
 
     private GameObject oldParent;
 
@@ -36,8 +38,8 @@ public class ParentSpawner : MonoBehaviour
     public void SpawnBystander()
     {
         Assign(false);
-        newBystander = Instantiate(parentPrefab, Place(), Quaternion.identity);
-        Debug.Log("Bystander Spawned");
+        newBystander = Instantiate(parentPrefabs[GetPrefab()], Place(), newRotation);
+        newBystander.GetComponentInChildren<Renderer>().material = humanMaterials[Random.Range(0, humanMaterials.Count)];
         bystanders.Add(newBystander);
         GiveRole(false);
     }
@@ -48,10 +50,17 @@ public class ParentSpawner : MonoBehaviour
             oldParent = newParent;
         }
         Assign(true);
-        newParent = Instantiate(parentPrefab, Place(), Quaternion.identity);
+        newParent = Instantiate(parentPrefabs[GetPrefab()], Place(), newRotation);
+        newParent.GetComponentInChildren<Renderer>().material = humanMaterials[Random.Range(0, humanMaterials.Count)];
         GiveRole(true);
         AssignObjective(newParent);
         DeleteOldParent();
+    }
+
+    private int GetPrefab()
+    {
+        int prefabIndex = Random.Range(0, parentPrefabs.Count);
+        return prefabIndex;
     }
 
     private void Assign(bool isParent)
@@ -102,12 +111,14 @@ public class ParentSpawner : MonoBehaviour
             spawnArea = spawnAreas[currentArea];
             Debug.Log(spawnArea);
             spawnPos = spawnArea.GetComponent<SpawnArea>().GetSpawnPos();
+            newRotation = Quaternion.identity;
         }
         else if(newType == "sitting")
         {
             //find sitting area from list
-            int sitSpotInt = Random.Range(0, sittingLocations.Count-1);
+            int sitSpotInt = Random.Range(0, sittingLocations.Count);
             spawnPos = sittingLocations[sitSpotInt].position;
+            newRotation = sittingLocations[sitSpotInt].rotation;
         }
         return spawnPos;
     }

@@ -7,10 +7,12 @@ public class RandomWalking : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private float walkRadius = 1f;
+    [SerializeField] private float maxSpeed, minSpeed;
 
     private void Start()
     {
         transform.position = RandomNavmeshLocation();
+        agent.speed = Random.Range(minSpeed, maxSpeed);
     }
     public Vector3 RandomNavmeshLocation()
     {

@@ -22,12 +22,13 @@ public class VanController : MonoBehaviour
     [SerializeField] private Transform backRightWheelTransform;
 
     [SerializeField] private Rigidbody rb;
+    private float vanMovingPitch;
 
     private float resetCooldownTimer, completeResetTimer;
     [SerializeField] private float resetCooldownDuration, completeResetHoldDuration;
     private bool completelyResetting;
 
-    //[SerializeField] private AudioClip ;
+    [SerializeField] private AudioClip vanIdle, vanMoving;
     [SerializeField] private AudioSource vanAudioSource, vanHornAS;
 
     private void OnEnable()
@@ -84,6 +85,9 @@ public class VanController : MonoBehaviour
             currentBreakForce = breakForce;
             applyBreaking();
         }
+
+        vanMovingPitch = rb.velocity.magnitude / 10f;
+        vanAudioSource.pitch = Mathf.Clamp(vanMovingPitch, 0.5f, 1);
         
     }
 
@@ -110,6 +114,12 @@ public class VanController : MonoBehaviour
             if(rb.velocity.magnitude < 2f)
             {
                 isReadyToReverse = true;
+                //if (vanAudioSource.clip != vanIdle)
+                //{
+                //    vanAudioSource.clip = vanIdle;
+                //    vanAudioSource.Play();
+                //}
+                
             }
             currentBreakForce = breakForce;
             applyBreaking();
@@ -162,15 +172,12 @@ public class VanController : MonoBehaviour
         isReversing = false;
         isReadyToReverse = false;
         currentSpeed = context.ReadValue<float>();
-        //if(context.started || context.performed)
+        //if (vanAudioSource.clip != vanMoving)
         //{
-
-        //    isAccelerating = true;
+        //    vanAudioSource.clip = vanMoving;
+        //    vanAudioSource.Play();
         //}
-        //else
-        //{
-        //    isAccelerating = false;
-        //}
+        
 
     }
     public void Decelerate(InputAction.CallbackContext context)

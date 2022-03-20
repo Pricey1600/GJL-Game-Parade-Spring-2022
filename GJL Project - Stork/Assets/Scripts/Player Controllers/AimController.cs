@@ -15,6 +15,9 @@ public class AimController : MonoBehaviour
     [SerializeField] private List<GameObject> babyPrefabs;
     [SerializeField] private LayerMask aimColliderMask;
 
+    private AudioSource vanAS;
+    [SerializeField] private List<AudioClip> launchSFX;
+
     private Quaternion camAnglesQ;
 
     private void OnEnable()
@@ -31,6 +34,7 @@ public class AimController : MonoBehaviour
     private void Start()
     {
         aimPOV = aimVC.GetCinemachineComponent<CinemachinePOV>();
+        vanAS = gameObject.GetComponent<AudioSource>();
         ReloadBaby();
     }
 
@@ -59,8 +63,9 @@ public class AimController : MonoBehaviour
         {
             Time.timeScale = 1f;
             aimLocatorSprite.gameObject.SetActive(false);
-            aimPOV.m_HorizontalAxis.Value = followVC.m_XAxis.Value;
-            aimPOV.m_VerticalAxis.Value = followVC.m_YAxis.Value;
+            //aimPOV.m_HorizontalAxis.Value = followVC.m_XAxis.Value;
+            //aimPOV.gameObject.transform.position = followVC.transform.position;
+            
         }
     }
 
@@ -72,6 +77,7 @@ public class AimController : MonoBehaviour
             var babyToLaunch = Instantiate(babyPrefabs[babyInt], launcher.position, launcher.rotation);
             babyToLaunch.GetComponent<Rigidbody>().velocity = launcher.forward * (aiming_V0 + 0.5f);
             hasBaby = false;
+            vanAS.PlayOneShot(launchSFX[Random.Range(0, launchSFX.Count)], 0.7f);
         }
         
     }
