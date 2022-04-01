@@ -8,6 +8,8 @@ TagManager:
   - GameManager
   - Bystander
   - GameCompleteScreen
+  - FollowCam
+  - AimCam
   layers:
   - Default
   - TransparentFX

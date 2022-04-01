@@ -35,6 +35,7 @@ public class AimController : MonoBehaviour
     {
         aimPOV = aimVC.GetCinemachineComponent<CinemachinePOV>();
         vanAS = gameObject.GetComponent<AudioSource>();
+        aimVC.gameObject.SetActive(false);
         ReloadBaby();
     }
 

@@ -62,7 +62,11 @@ public class MainMenuManager : MonoBehaviour
     {
         Screen.fullScreen = false;
         Cursor.lockState = CursorLockMode.None;
-        Application.Quit();
+        if(Application.platform != RuntimePlatform.WebGLPlayer)
+        {
+            Application.Quit();
+        }
+        
     }
 
     public void ButtonSFX()

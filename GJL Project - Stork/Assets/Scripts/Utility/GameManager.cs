@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private bool gameRuning, isPaused;
+    private bool isPaused;
     [SerializeField] private bool mainMenu;
 
     private float timer;
@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text timerText;
     private string minutes, seconds;
 
-    [SerializeField] private GameObject DesktopControls, ControllerControls, pauseScreen;
+    [SerializeField] private GameObject DesktopControls, ControllerControls, pauseScreen, optionsScreen;
 
-    [SerializeField] private GameObject pauseFirstButton, EndScreenFirstButton, fullscreenToggle;
+    [SerializeField] private GameObject pauseFirstButton, EndScreenFirstButton, fullscreenToggle; //add options screen ver here
 
     private AudioSource mainAS;
 
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame()
     {
-        gameRuning = true;
+        //gameRuning = true;
         OnStarted?.Invoke();
         timer = gameDuration;
         Cursor.lockState = CursorLockMode.Locked;
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
             if (timer <= 0)
             {
                 //game over. Trigger event
-                gameRuning = false;
+                //gameRuning = false;
                 Cursor.lockState = CursorLockMode.Confined;
                 OnComplete?.Invoke();
                 EventSystem.current.SetSelectedGameObject(null);
@@ -91,7 +91,24 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1f;
             mainAS.volume = mainAS.volume * 3;
             pauseScreen.SetActive(false);
+            if(optionsScreen.activeSelf == true)
+            {
+                optionsScreen.SetActive(false);
+            }
             OnUnpause?.Invoke();
+        }
+        
+    }
+
+    public void toggleOptionsScreen()
+    {
+        if (!optionsScreen.activeInHierarchy)
+        {
+            optionsScreen.SetActive(true);
+        }
+        else
+        {
+            optionsScreen.SetActive(false);
         }
         
     }

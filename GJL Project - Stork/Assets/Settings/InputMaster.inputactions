@@ -301,6 +301,28 @@
                 },
                 {
                     "name": "",
+                    "id": "c6dcccdc-15e9-49ad-ac8a-7695026d5957",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Desktop",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50faa488-0e1a-449d-978d-79a0fb5c7cbc",
+                    "path": "<Keyboard>/backspace",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Desktop",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "fdf99faf-d580-4f6a-972b-42d64bcd7c37",
                     "path": "<Keyboard>/space",
                     "interactions": "",
