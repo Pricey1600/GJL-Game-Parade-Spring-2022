@@ -17,8 +17,10 @@ public class AimController : MonoBehaviour
 
     private AudioSource vanAS;
     [SerializeField] private List<AudioClip> launchSFX;
+    [SerializeField] private AudioClip NoBabySFX;
 
     private Quaternion camAnglesQ;
+    private Quaternion aimLocatorSpriteAnglesQ;
 
     private void OnEnable()
     {
@@ -36,6 +38,8 @@ public class AimController : MonoBehaviour
         aimPOV = aimVC.GetCinemachineComponent<CinemachinePOV>();
         vanAS = gameObject.GetComponent<AudioSource>();
         aimVC.gameObject.SetActive(false);
+        Vector3 aimLocatorSpriteAngles = new Vector3(-90, 0, 0);
+        aimLocatorSpriteAnglesQ.eulerAngles = aimLocatorSpriteAngles;
         ReloadBaby();
     }
 
@@ -76,9 +80,13 @@ public class AimController : MonoBehaviour
         {
             int babyInt = Random.Range(0, babyPrefabs.Count);
             var babyToLaunch = Instantiate(babyPrefabs[babyInt], launcher.position, launcher.rotation);
-            babyToLaunch.GetComponent<Rigidbody>().velocity = launcher.forward * (aiming_V0 + 0.5f);
+            babyToLaunch.GetComponent<Rigidbody>().velocity = (launcher.forward * (aiming_V0 + 0.5f));
             hasBaby = false;
             vanAS.PlayOneShot(launchSFX[Random.Range(0, launchSFX.Count)], 0.7f);
+        }
+        else if (!hasBaby && context.started)
+        {
+            vanAS.PlayOneShot(NoBabySFX);
         }
         
     }
@@ -119,6 +127,7 @@ public class AimController : MonoBehaviour
         if(Physics.Raycast(aimLocator.transform.position, Vector3.down, out RaycastHit hit, 100f, aimColliderMask))
         {
             aimLocatorSprite.position = new Vector3(hit.point.x, hit.point.y +0.1f, hit.point.z);
+            aimLocatorSprite.rotation = aimLocatorSpriteAnglesQ;
             Debug.DrawRay(aimLocator.position, aimLocator.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
         }
     }

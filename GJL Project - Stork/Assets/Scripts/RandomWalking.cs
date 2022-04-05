@@ -9,10 +9,15 @@ public class RandomWalking : MonoBehaviour
     [SerializeField] private float walkRadius = 1f;
     [SerializeField] private float maxSpeed, minSpeed;
 
+    private bool isStanding;
+    private float standingTimer;
+    private Animator AC;
+
     private void Start()
     {
         transform.position = RandomNavmeshLocation();
         agent.speed = Random.Range(minSpeed, maxSpeed);
+        AC = gameObject.GetComponentInChildren<Animator>();
     }
     public Vector3 RandomNavmeshLocation()
     {
@@ -29,10 +34,39 @@ public class RandomWalking : MonoBehaviour
 
     private void Update()
     {
-        if (!agent.hasPath && agent.isActiveAndEnabled)
+        if (!agent.hasPath && agent.isActiveAndEnabled && !isStanding)
         {
-            agent.SetDestination(RandomNavmeshLocation());
+            //choose whether to find a new path or to stand for a bit
+            int newTypeInt = Random.Range(0, 2);
+            if(newTypeInt == 0)
+            {
+                agent.SetDestination(RandomNavmeshLocation());
+                AC.SetBool("isStanding", false);
+            }
+            else
+            {
+                ChangeToStanding();
+            }
+            
         }
+        if(standingTimer > 0)
+        {
+            standingTimer -= Time.deltaTime;
+            if(standingTimer <= 0)
+            {
+                isStanding = false;
+            }
+        }
+    }
+
+    private void ChangeToStanding()
+    {
+        int duration = Random.Range(3, 20);
+        standingTimer = duration;
+        isStanding = true;
+        AC.SetBool("isStanding", true);
+        agent.SetDestination(transform.position);
+
     }
 
     public void ToggleAgent()

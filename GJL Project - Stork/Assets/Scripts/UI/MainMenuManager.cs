@@ -57,6 +57,10 @@ public class MainMenuManager : MonoBehaviour
     public void FullscreenToggle(bool status)
     {
         Screen.fullScreen = status;
+        if(Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+        }
     }
     public void quitGame()
     {

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2561561692077159206}
   - component: {fileID: 6788041139451761186}
   - component: {fileID: 616077041609551381}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 6321000908336686837}
   - component: {fileID: 2328568344891818969}
   - component: {fileID: -4950197123896843488}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BabyBB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4755896688999623455}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 60e1ec911de935141ad33eec7437c4fc, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 22.13388

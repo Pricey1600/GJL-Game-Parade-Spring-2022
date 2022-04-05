@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(pauseFirstButton);
             OnPause?.Invoke();
+            //Debug.Log("OnPause Called");
         }
         else
         {
@@ -91,13 +92,21 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1f;
             mainAS.volume = mainAS.volume * 3;
             pauseScreen.SetActive(false);
-            if(optionsScreen.activeSelf == true)
+            if (optionsScreen.activeSelf == true)
             {
                 optionsScreen.SetActive(false);
             }
             OnUnpause?.Invoke();
         }
-        
+
+
+    }
+    public void PauseGameViaInput(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            PauseGame();
+        }
     }
 
     public void toggleOptionsScreen()

@@ -34,33 +34,31 @@ public class ParentScript : MonoBehaviour
 
     private void Start()
     {
+        
         if (sittingBystander)
         {
+            //if its a pre-placed sitting bystander it wont get any input from the spawner script
             type = "sitting";
             SetUp();
         }
+        
     }
     public void SetUp()
     {
         AC = gameObject.GetComponentInChildren<Animator>();
         navAgent = gameObject.GetComponent<NavMeshAgent>();
         parentAS = gameObject.GetComponent<AudioSource>();
-        if (type == "standing")
-        {
-            gameObject.GetComponent<NavMeshAgent>().enabled = true;
-            gameObject.GetComponent<RandomWalking>().enabled = false;
-            AC.SetBool("isStanding", true);
-        }
-        else if (type == "walking")
+        if (type == "standing" || type == "walking")
         {
             gameObject.GetComponent<NavMeshAgent>().enabled = true;
             gameObject.GetComponent<RandomWalking>().enabled = true;
-            AC.SetBool("isStanding", false);
+            
         }
         else
         {
-            gameObject.GetComponent<NavMeshAgent>().enabled = false;
             gameObject.GetComponent<RandomWalking>().enabled = false;
+            gameObject.GetComponent<NavMeshAgent>().enabled = false;
+            
             AC.SetBool("isSitting", true);
             //set sitting animations here
         }
@@ -70,7 +68,11 @@ public class ParentScript : MonoBehaviour
     {
         timer = timerLength;
         gameObject.GetComponent<RandomWalking>().enabled = false;
-        navAgent.SetDestination(transform.position);
+        if (navAgent.isActiveAndEnabled)
+        {
+            navAgent.SetDestination(transform.position);
+        }
+        
         gameObject.GetComponent<Collider>().enabled = false;
         AC.SetTrigger("Success");
 

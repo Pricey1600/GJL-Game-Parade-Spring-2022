@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8232674731050735354}
   - component: {fileID: 3318292535345090853}
   - component: {fileID: 160734847336678988}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BabyWB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1471220138792366481}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 60e1ec911de935141ad33eec7437c4fc, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 22.13388
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 8495753677688547752}
   - component: {fileID: 601638809353537708}
   - component: {fileID: 6838217898422498459}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}

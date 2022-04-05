@@ -109,7 +109,7 @@ public class ParentSpawner : MonoBehaviour
                 currentArea = 0;
             }
             spawnArea = spawnAreas[currentArea];
-            Debug.Log(spawnArea);
+            //Debug.Log(spawnArea);
             spawnPos = spawnArea.GetComponent<SpawnArea>().GetSpawnPos();
             newRotation = Quaternion.identity;
         }
